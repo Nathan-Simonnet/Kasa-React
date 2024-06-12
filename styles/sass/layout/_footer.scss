@@ -1,0 +1,51 @@
+@import '../utils/variables';
+@import '../utils/_mixins.scss';
+
+footer {
+    @include dfcol();
+    height: 13.663rem;
+    margin-top: 50px;
+    color: white;
+    background: black;
+
+    .footer_logo-container{
+        width: 7.625rem;
+        height: 2.5rem;
+        margin-top: 65px;
+        .footer_logo_kasa{
+            @include dft();
+            width: 100%;
+        }
+    }
+    .wrapper{
+        @include dft();
+        width: 100%;
+        .footer_credits{
+            font-size: 1.5rem;
+            margin: 50px 0 35px 0;
+        }
+    }
+}
+
+@media screen and (max-width:700px) {
+
+    footer {
+        .wrapper{
+            .footer_credits{
+                font-size: 0.75rem;
+                margin: 20px 0 35px 0;
+            }
+        }
+    }
+}
+
+@media screen and (max-width:375px) {
+    footer {
+        .wrapper{
+            .footer_credits{
+                padding-left: 20px;
+                max-width:8.375rem;
+            }
+        }
+    }
+}

@@ -1,0 +1,241 @@
+@import '_variables.scss';
+@import '_mixins.scss';
+
+main.rental{
+    margin-top: 50px;
+    .rental_carousel,.location_carousel_img-and-i-container,.location_carousel_img{
+        border-radius: 25px;
+    }
+    
+    .rental_carousel{
+        position: relative;
+        color: white;
+    
+        .location_carousel_img-and-i-container {
+         width: 100%;
+            .location_carousel_img{
+                height: 25.938rem;
+               width: 100%;
+               object-fit: cover;
+            }
+            .location_carousel_counter,.carousel_chevron{
+                position: absolute;
+            }
+    
+            .location_carousel_counter{
+                bottom: 0;
+                left: 50%;
+                transform: translate(-50%,-50%);
+                font-size: 1.35rem;
+                margin-bottom: 15px;
+            }
+    
+            .carousel_chevron{
+                top: 50%;
+                transform: translateY(-80%);
+                margin: 25px;
+                font-size: 6rem;
+                cursor: pointer;
+                &.fa-chevron-left{
+                    left: 0;
+                }
+                &.fa-chevron-right{
+                    right: 0;
+                }
+            }
+        }
+    
+        .carousel_box{
+            display: none;
+        }
+    }
+    
+    .rental_informations-container{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 36px;
+        color: $light-red;
+        .rental_title-and-location-container{
+            .rental_title{
+                font-size: 2.25rem;
+                font-weight: lighter;
+            }
+            .rental_location{
+                font-size: 1.125rem;
+                margin-top: 6px;
+                color: black;
+            }
+            .rental_tag-container{
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 10px;
+                margin-top: 12px;
+                .rental_tag{
+                    font-size: 0.875rem;
+                    padding:6px 32px;
+                    color: white;
+                    font-weight: bold;
+                    letter-spacing: 1px;
+                    background-color: $light-red;
+                    border-radius: 10px;
+                }
+            }
+        }
+        .rental_owner-and-rating-container{
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+    
+            .rental_owner-container{
+                @include dft();
+                .rental_owner_name{
+                    width: 5.813rem;
+                    font-size: 1.125rem;
+                    text-align: right;
+                }
+                .rental_owner_picture-container{
+                    height:4rem;
+                    width: 4rem;
+                    margin: 10px;
+                    border-radius: 50%;
+                    .rental_owner_picture{
+                        width: 100%;
+                        border-radius: 50%;
+                    }
+                }
+            }
+            .rental_rating-container{
+                .fa-star{
+                    font-size: 1.5rem;
+                    margin: 4px;
+                    &.red-star{
+                        color: $light-red;
+                    }
+                    &.grey-star{
+                        color: #E3E3E3;
+                    }
+                }
+            }
+        }
+    }
+    
+    .rental_dropdown_container{
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        .rental_dropdown{
+            width: 47%;
+            font-size: 1rem;
+            margin-top: 24px;
+            @include dropdown();
+            
+            .rental_dropdown_title-container{
+                @include dropdown-banner();
+    
+                .dropdown_title{
+                    font-size: 1.125rem;
+                    width: 100%;
+                }
+                .chevron{
+                    cursor: pointer;
+                    &.active{
+                        display: none;
+                    }
+                }
+            }
+            .rental_dropdown_text{
+                font-size: 1.125rem;
+                padding: 14px;
+                color: black;
+                &.hidden{
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+
+
+@media screen and (max-width:1100px) {
+    .rental_informations-container{
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: space-between;
+        .rental_owner-and-rating-container{
+            width: 100%;
+            display:flex;
+            flex-direction: row-reverse;
+            justify-content:space-between;
+            align-items:center;
+        }
+    }
+}
+
+@media screen and (max-width:700px) {
+
+    .rental_carousel{
+        .location_carousel_img-and-i-container {
+            .location_carousel_img{
+                height: 15.938rem;
+            }
+            .location_carousel_counter{
+                font-size: 1rem;
+            }
+            .carousel_chevron{
+                font-size: 2.4rem;
+            }
+        }
+    }
+    .rental_informations-container{
+        .rental_title-and-location-container{
+            .rental_title{
+                font-size: 1.125rem;
+            }
+            .rental_location{
+                font-size: 0.875rem;
+            }
+            .rental_tag-container{
+                .rental_tag{
+                    font-size: 0.625rem;
+                    padding: 6px 16px;
+                }
+            }
+        }
+        .rental_owner-and-rating-container{
+            .rental_owner-container{
+                .rental_owner_name{
+                    width: 3.875rem;
+                    font-size: 0.75rem;
+                }
+                .rental_owner_picture-container{
+                    height:2rem;
+                    width: 2rem;
+                }
+            }
+            .rental_rating-container{
+                .fa-star{
+                    font-size: 1rem;
+                }
+            }
+        }
+    }
+
+    .rental_dropdown_container{
+        flex-direction: column;
+        .rental_dropdown{
+            width: 100%;
+            .rental_dropdown_title-container{
+                .dropdown_title{
+                    font-size: 0.813rem;
+                }
+            }
+            .rental_dropdown_text{
+                font-size:  0.75rem;
+            }
+        }
+    }
+}
