@@ -1,0 +1,78 @@
+
+header,
+main {
+  margin-left: 100px;
+  margin-right: 100px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 45px;
+}
+
+.header_logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header_logo-container .link_kasa_homepage {
+  width: 13.125rem;
+  height: 4.25rem;
+}
+
+.header_logo-container .link_kasa_homepage .logo_kasa {
+  width: 100%;
+  height: 100%;
+}
+
+.header-nav .header_nav_ul {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 57px;
+}
+
+.header-nav .header_nav_ul .header_nav_li .header_nav_link {
+  font-size: 1.5rem;
+  text-transform: uppercase;
+
+  &.active {
+    text-decoration: underline;
+  }
+}
+
+@media screen and (max-width: 700px) {
+
+  header,
+  main {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .header_logo-container .link_kasa_homepage {
+    width: 9.063rem;
+    height: 2.938rem;
+  }
+
+  .header-nav .header_nav_ul {
+    gap: 25px;
+  }
+
+  .header-nav .header_nav_ul .header_nav_li .header_nav_link {
+    font-size: 0.75rem;
+  }
+
+}
+
+
+
+@media screen and (max-width: 340px) {
+  .header-nav .header_nav_ul{
+    @include dfcol();
+    gap: 15px;
+  }
+
+}

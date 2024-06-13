@@ -1,0 +1,13 @@
+{
+  "short_name": "Kasa",
+  "name": "Create React App Sample",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }]
+  ,
+  "start_url": ".",
+  "display": "standalone"
+}

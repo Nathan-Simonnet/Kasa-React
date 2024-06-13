@@ -1,7 +1,8 @@
-@import '../utils/variables';
-@import '../utils/_mixins.scss';
-@import './typo';
 
+@font-face {
+    font-family: 'Montserrat-local';
+    src: url(../../assets/fonts/montserrat/Montserrat-Medium.ttf);
+  }  
 
 *{
     padding:0;

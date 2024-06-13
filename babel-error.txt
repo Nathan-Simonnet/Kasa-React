@@ -1,0 +1,1 @@
+yarn add --dev @babel/plugin-proposal-private-property-in-object
