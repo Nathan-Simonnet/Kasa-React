@@ -5,15 +5,15 @@ main.error {
   justify-content: center;
   align-items: center;
   gap: 139px;
-  padding-top: 150px;
-  padding-bottom: 150px;
+  padding-top: 139px;
+  padding-bottom: 139px;
 
   .error_title, .error_text {
     color: $light-red;
   }
   
    .error_title {
-    font-size: 18rem;
+    font-size: 16.438rem;
   }
   
    .error_text {
@@ -33,9 +33,10 @@ main.error {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-align: center;
     gap: 113px;
-    padding-top: 150px;
-    padding-bottom: 150px;
+    padding-top: 113px;
+    padding-bottom: 113px;
 
     .error_title,
     .error_text {
@@ -43,7 +44,7 @@ main.error {
     }
   
     .error_title {
-      font-size: 6rem;
+      font-size: 6.188rem;
     }
   
     .error_text {
@@ -55,6 +56,4 @@ main.error {
       text-decoration: underline;
     }
   }
-
-
 }

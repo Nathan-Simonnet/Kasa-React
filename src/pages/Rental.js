@@ -5,7 +5,7 @@ import Footer from '../layout/Footer.js';
 function Rental() {
     return (
         <React.Fragment >
-            <Header />
+             <Header />
             <main className="rental">
                 <div className="rental_carousel">
                     <figure className="location_carousel_img-and-i-container">

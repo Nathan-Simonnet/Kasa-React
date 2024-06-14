@@ -187,11 +187,16 @@ main.rental {
 
 .rental_dropdown_container .rental_dropdown .rental_dropdown_text {
   font-size: 1.125rem;
-  padding: 14px;
-  color: black;
-
+  max-height: 300px;
+  padding: 10px;
+  overflow: visible;
+  transition:  0.3s;
+  
   &.hidden{
-  display: none;
+    max-height: 0;
+    padding: 0 10px;
+    overflow: hidden;
+    transition:  0.2s;
   }
   .rental_infos{
     padding: 2px;

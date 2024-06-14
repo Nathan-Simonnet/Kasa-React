@@ -75,7 +75,7 @@ main.homepage {
 
 
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 730px) {
   main.homepage{
 
     .presentation-img_container {
@@ -104,10 +104,10 @@ main.homepage {
   }
 }
 
-@media screen and (max-width: 375px) {
-  main.homepage {
-    .rental-cards_container {
-      background: none;
-    }
-  }
-}
+// @media screen and (max-width: 375px) {
+//   main.homepage {
+//     .rental-cards_container {
+//       background: none;
+//     }
+//   }
+// }

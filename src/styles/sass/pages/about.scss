@@ -73,21 +73,18 @@
   max-height: 300px;
   padding: 10px;
   overflow: visible;
-  transition: all 0.3s linear;
+  transition:0.3s;
   
-  
-
   &.hidden{
     max-height: 0;
     padding: 0 10px;
     overflow: hidden;
-    transition: all 0.1s linear;
-
+    transition: 0.1s;
   }
 }
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 730px) {
 main.about{
   .about_image-container {
     height: 7rem;

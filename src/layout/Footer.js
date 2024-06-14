@@ -1,4 +1,5 @@
 import logoKasaWhite from '../assets/images/logo_kasa_white.webp';
+
 function Footer() {
     return (
         <footer>

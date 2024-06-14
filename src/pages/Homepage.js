@@ -1,29 +1,21 @@
 import React from 'react';
-import Header from '../layout/Header.js';
-import Footer from '../layout/Footer.js';
-import specimen from '../assets/images/specimen.png';
-
+ import Cards from '../components/Cards-injection.jsx'
+ import Header from '../layout/Header.js';
+ import Footer from '../layout/Footer.js';
 
 function Homepage() {
     return (
         <React.Fragment >
-            <Header currentPage="/" />
-
+            <Header currentPage = "/" />
             <main className="homepage">
                 <div className="presentation-img_container">
                     <h1 className="presentation_title">Chez vous, partout et ailleurs</h1>
                 </div>
 
                 <div className="rental-cards_container">
-                    <article className="rental-card"><a className="rental-card_link" aria-label="Liens vers location" href="#" id="x"><img src={specimen} className='rental-card_img' alt="location" /><h2>Specimen</h2></a></article>
-                    <article className="rental-card"><a className="rental-card_link" aria-label="Liens vers location" href="#" id="x"><img src={specimen} className='rental-card_img' alt="location" /><h2>Specimen</h2></a></article>
-                    <article className="rental-card"><a className="rental-card_link" aria-label="Liens vers location" href="#" id="x"><img src={specimen} className='rental-card_img' alt="location" /><h2>Specimen</h2></a></article>
-                    <article className="rental-card"><a className="rental-card_link" aria-label="Liens vers location" href="#" id="x"><img src={specimen} className='rental-card_img' alt="location" /><h2>Specimen</h2></a></article>
-                    <article className="rental-card"><a className="rental-card_link" aria-label="Liens vers location" href="#" id="x"><img src={specimen} className='rental-card_img' alt="location" /><h2>Specimen</h2></a></article>
-                    <article className="rental-card"><a className="rental-card_link" aria-label="Liens vers location" href="#" id="x"><img src={specimen} className='rental-card_img' alt="location" /><h2>Specimen</h2></a></article>
+                    <Cards/>
                 </div>
             </main>
-
             <Footer />
         </React.Fragment >
     );
