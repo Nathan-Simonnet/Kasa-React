@@ -5,28 +5,26 @@ Code du projet 5 du parcours développeur web.
 
 ## Utilisation
 
-### `yarn start` ou '`npm start`
+### `yarn start` ou `npm start`
 
-Exécute l'application en mode développement.\
 Ouvrir [http://localhost:3000](http://localhost:3000) pour le visualiser dans votre navigateur.
 
 La page se rechargera lorsque vous apporterez des modifications.\
-Vous pouvez également voir des erreurs de charpie dans la console.
 
 ## Présentation
 ### Technos
 ![image](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![image](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![image](https://img.shields.io/badge/Sass-CC6699?style=flat-square&logo=Sass&logoColor=white)
 ![image](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
 ![image](https://shields.io/badge/react-black?logo=react&style=for-the-badge)
+![image](https://img.shields.io/badge/Sass-CC6699?style=flat-square&logo=Sass&logoColor=white)
 
 ### Scenario 
 Vous êtes développeur front-end en freelance pour Kasa, une entreprise de location d’appartements entre particuliers.
 
 ### Missions
 + Ajouter React Router
-+ Creer les 4 pages identique à la maquette
++ Creer les 4 pages selon la maquette
 + Creer un carrousel 
 + Gerer l'erreur sur l'id d'une propriété
 
