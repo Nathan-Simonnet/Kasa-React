@@ -1,5 +1,4 @@
 # Site web de location d’appartements  - Kasa
-Code du projet 5 du parcours développeur web.
 
 ![Page d'acceuil du site Kasa](src/assets/images/Kasa-thumbnail.png)
 
