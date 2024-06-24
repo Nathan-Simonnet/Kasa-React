@@ -1,9 +1,9 @@
 @import './utils/variables';
-@import './utils/_mixins.scss';
+@import './utils/mixins';
 @import './base/normalize';
 @import './layout/footer';
 @import './layout/header';
-@import './pages/error.scss';
-@import './pages/homepage.scss';
-@import './pages/rental.scss';
-@import './pages/about.scss';
+@import './pages/error';
+@import './pages/homepage';
+@import './pages/rental';
+@import './pages/about';

@@ -1,5 +1,5 @@
 import React from 'react';
- import Cards from '../components/Cards-injection.jsx'
+ import Cards from '../components/CardsDisplay.jsx'
  import Header from '../layout/Header.js';
  import Footer from '../layout/Footer.js';
 

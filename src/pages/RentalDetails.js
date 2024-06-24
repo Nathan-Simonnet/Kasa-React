@@ -1,25 +1,37 @@
-import datasLogement from '../assets/data/logements.json';
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../layout/Header.js';
 import Carousel from '../components/Slideshow.jsx';
+import CollapseRental from '../components/CollapseRental.jsx';
 import Footer from '../layout/Footer.js';
-import CollapseRentalChevron from '../components/Collapse_rental.jsx';
 
 function RentalInjection() {
 
     const { id } = useParams()
+    const [datasRentals, setDatasRentals] = useState([]);
+    const navigateToError = useNavigate();
     const [currentRental, setCurrentRental] = useState(null);
-    const navigate = useNavigate();
 
-    // Find current rental from datasLogement, if no corresponding, navigate to error 404
     useEffect(() => {
-        const foundLogement = datasLogement.find(logement => logement.id == id);
-        foundLogement ? setCurrentRental(foundLogement) : navigate('/error');
-    }, [id, navigate]);
+        // Fetch the data when the component mounts
+        fetch('/logements.json')
+            .then(response => response.json())
+            .then(data => setDatasRentals(data))
+            .catch(error => console.error('Error fetching data:', error));
+            // Prevent infinite loop
+    }, []);
 
-    // Without this it's completely broken!!
-    if (!currentRental) return <div>Error: Rental not found</div>;
+    useEffect(() => {
+        if (datasRentals.length > 0) {
+            const foundRental = datasRentals.find(data => data.id == id);
+            foundRental ? setCurrentRental(foundRental) : navigateToError('/error');
+        }
+    }, [datasRentals, id, navigateToError]);
+
+    // Oui c'est vitale! Sion react essayera de charger unélément inexistant (et c'est pas bien)
+    if (!currentRental) {
+        return <div>Loading...</div>; // Spinner/loading component would be great
+    }
 
     // loop for tags inside currentRental
     const tagsInjection = () => {
@@ -77,11 +89,11 @@ function RentalInjection() {
 
                 <div className="rental_dropdown_container">
                     <article className="rental_dropdown description" id="rental_dropdown_description">
-                        <CollapseRentalChevron tag="description" currentId={currentRental.id} title="Description" />
+                        <CollapseRental tag="description" title="Description" rentalDescription={currentRental.description}  />
                     </article>
 
                     <article className="rental_dropdown equipment" id="rental_dropdown_equipments">
-                        <CollapseRentalChevron tag="equipments" currentId={currentRental.id} title="Équipements" />
+                        <CollapseRental tag="equipments" title="Équipements" rentalEquipements={currentRental.equipments} />
                     </article>
                 </div>
             </main>
