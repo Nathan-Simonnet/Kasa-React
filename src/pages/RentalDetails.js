@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../layout/Header.js';
-import Carousel from '../components/Slideshow.jsx';
-import CollapseRental from '../components/CollapseRental.jsx';
+import Slideshow from '../components/Slideshow.jsx';
+import Collapse from '../components/Collapse.jsx';
 import Footer from '../layout/Footer.js';
 
-function RentalInjection() {
+function RentalDetails() {
 
     const { id } = useParams()
     const [datasRentals, setDatasRentals] = useState([]);
@@ -60,7 +60,7 @@ function RentalInjection() {
         <React.Fragment >
               <Header />
             <main className="rental">
-            <Carousel currentId={currentRental.id} />
+            <Slideshow currentId={currentRental.id} />
 
                 <div className="rental_informations-container">
                     <div tabIndex="0"  className="rental_title-and-location-container">
@@ -89,11 +89,11 @@ function RentalInjection() {
 
                 <div className="rental_dropdown_container">
                     <article className="rental_dropdown description" id="rental_dropdown_description">
-                        <CollapseRental tag="description" title="Description" rentalDescription={currentRental.description}  />
+                        <Collapse tag="description" title="Description" infos={currentRental.description}  />
                     </article>
 
                     <article className="rental_dropdown equipment" id="rental_dropdown_equipments">
-                        <CollapseRental tag="equipments" title="Équipements" rentalEquipements={currentRental.equipments} />
+                        <Collapse tag="equipments" title="Équipements" infos={currentRental.equipments} />
                     </article>
                 </div>
             </main>
@@ -102,4 +102,4 @@ function RentalInjection() {
     );
 }
 
-export default RentalInjection;
+export default RentalDetails;

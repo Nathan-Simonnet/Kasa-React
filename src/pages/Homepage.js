@@ -1,9 +1,23 @@
-import React from 'react';
- import Cards from '../components/CardsDisplay.jsx'
+import React, { useState, useEffect } from 'react';
+ import Card from '../components/Card.jsx'
  import Header from '../layout/Header.js';
  import Footer from '../layout/Footer.js';
 
 function Homepage() {
+
+    
+    const [datasLogement, setDatasLogement] = useState([]);
+
+    useEffect(() => {
+        //  Component mounts
+        fetch('/logements.json') 
+            .then(response => response.json())
+            .then(data => setDatasLogement(data))
+            .catch(error => console.error('Error fetching rental details:', error));
+        // Prevent ininite loop
+        }, []); 
+
+
     return (
         <React.Fragment >
             <Header currentPage = "/" />
@@ -13,7 +27,9 @@ function Homepage() {
                 </div>
 
                 <div className="rental-cards_container">
-                    <Cards/>
+                    {datasLogement.map((data, index) =>{
+                  return <Card key={index} id={data.id} img={data.cover} title={data.title}/>
+                    })}
                 </div>
             </main>
             <Footer />

@@ -1,4 +1,4 @@
-# Site web de location d’appartements  - Kasa
+# Site web de location d’appartements  - Kasa (version 2.0)
 
 ![Page d'acceuil du site Kasa](src/assets/images/Kasa-thumbnail.png)
 
@@ -27,9 +27,3 @@ Vous êtes développeur front-end en freelance pour Kasa, une entreprise de loca
 + Creer les 4 pages selon la maquette
 + Creer un carrousel pour la page de logement
 + Gerer l'erreur sur l'id d'une propriété
-
-
-
-
-
-

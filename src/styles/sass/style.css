@@ -632,5 +632,45 @@ main.about .about_dropdowns-container .about_dropdown .about_dropdown_text.hidde
     font-size: 0.75rem;
   }
 }
+.dropdown_title-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 3.25rem;
+  padding: 14px;
+  border-radius: 10px;
+  color: white;
+  background: #FF6060;
+  letter-spacing: 1px;
+}
+
+.dropdown_title {
+  font-size: 1.5rem;
+  width: 100%;
+  font-weight: bold;
+}
+
+.chevron {
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 1.8rem;
+}
+.chevron.active {
+  rotate: -180deg;
+}
+
+.dropdown_text {
+  font-size: 1.125rem;
+  max-height: 300px;
+  padding: 10px;
+  overflow: visible;
+  transition: 0.3s;
+}
+.dropdown_text.hidden {
+  max-height: 0;
+  padding: 0 10px;
+  overflow: hidden;
+  transition: 0.1s;
+}
 
 /*# sourceMappingURL=style.css.map */

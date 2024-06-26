@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function CollapseChevron( {title,id, text} ) {
+function CollapseAbout( {title,id, text} ) {
 
     // Dropdown click handler 
     // Chevron click = chevron down + text appear // And reverse
@@ -23,7 +23,7 @@ function CollapseChevron( {title,id, text} ) {
     );
 }
 
-export default CollapseChevron;
+export default CollapseAbout;
 
 // Fiabilité
 // "about_dropdown_text_reliability"

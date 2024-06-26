@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
  import placeholder from '../assets/images/placeholder.png';
 
-function Carousel({ currentId }) {
+function Slideshow({ currentId }) {
     const [datasRentals, setDatasRentals] = useState([]);
     const [currentRental, setCurrentRental] = useState(null);
     const [carouselIndex, setCarouselIndex] = useState(0);
@@ -94,4 +94,4 @@ function Carousel({ currentId }) {
 }
 }
 
-export default Carousel;
+export default Slideshow;
