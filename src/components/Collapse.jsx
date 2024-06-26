@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
 
-function Collapse({ tag, title, infos}) {
+function Collapse({ tag, title, infos }) {
 
     // Handle if the chevron and text are 'active' or not
     const [isVisible, setIsVisible] = useState(false)
     const handleClick = () => { setIsVisible(!isVisible) }
 
-  // Map only for equipments because it's a list of 'p' instead of 1 block
-  const textInjection = () => {
-    // Prevent react from trying to display an inexisting or undifined/null element
+    // Map only for equipments because it's a list of 'p' instead of 1 block
+    const textInjection = () => {
+        // Prevent react from trying to display an inexisting or undifined/null element
         if (tag === 'equipments') {
             return infos.map((equipment, index) => (
                 <p key={index} className="rental_infos">{equipment}</p>
             ))
         } else {
             return <p className="rental_infos">{infos}</p>
+        }
     }
-}
 
     return (
         <React.Fragment >

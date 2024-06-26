@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
- import placeholder from '../assets/images/placeholder.png';
+import placeholder from '../assets/images/placeholder.png';
 
 function Slideshow({ currentId }) {
     const [datasRentals, setDatasRentals] = useState([]);
@@ -12,7 +12,7 @@ function Slideshow({ currentId }) {
             .then(response => response.json())
             .then(data => setDatasRentals(data))
             .catch(error => console.error('Error fetching data:', error));
-            // Prevent infinite loop
+        // Prevent infinite loop
     }, []);
 
     useEffect(() => {
@@ -80,18 +80,18 @@ function Slideshow({ currentId }) {
         );
     } else {
         return (
-        <div className="rental_carousel">
-        <figure className="location_carousel_img-and-i-container">
-            <img
-                className="location_carousel_img"
-                tabIndex="0"
-                alt={`Pas de photos disponible`}
-                src={placeholder}
-            />
-        </figure>
-    </div>
-    )
-}
+            <div className="rental_carousel">
+                <figure className="location_carousel_img-and-i-container">
+                    <img
+                        className="location_carousel_img"
+                        tabIndex="0"
+                        alt={`Pas de photos disponible`}
+                        src={placeholder}
+                    />
+                </figure>
+            </div>
+        )
+    }
 }
 
 export default Slideshow;

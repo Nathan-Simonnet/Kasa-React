@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Card({ id, img, title}) {
+function Card({ id, img, title }) {
 
     return (
         <React.Fragment >

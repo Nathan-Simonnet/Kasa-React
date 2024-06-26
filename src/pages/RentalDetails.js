@@ -18,7 +18,7 @@ function RentalDetails() {
             .then(response => response.json())
             .then(data => setDatasRentals(data))
             .catch(error => console.error('Error fetching data:', error));
-            // Prevent infinite loop
+        // Prevent infinite loop
     }, []);
 
     useEffect(() => {
@@ -58,16 +58,16 @@ function RentalDetails() {
 
     return (
         <React.Fragment >
-              <Header />
+            <Header />
             <main className="rental">
-            <Slideshow currentId={currentRental.id} />
+                <Slideshow currentId={currentRental.id} />
 
                 <div className="rental_informations-container">
-                    <div tabIndex="0"  className="rental_title-and-location-container">
+                    <div tabIndex="0" className="rental_title-and-location-container">
                         <span className='sr-only'>Informations sur la location et environnement</span>
                         <h1 className="rental_title">{currentRental.title}</h1>
                         <p className="rental_location">{currentRental.location}</p>
-                        <div aria-label='Tags'  className="rental_tag-container">
+                        <div aria-label='Tags' className="rental_tag-container">
                             {tagsInjection()}
                         </div>
                     </div>
@@ -89,7 +89,7 @@ function RentalDetails() {
 
                 <div className="rental_dropdown_container">
                     <article className="rental_dropdown description" id="rental_dropdown_description">
-                        <Collapse tag="description" title="Description" infos={currentRental.description}  />
+                        <Collapse tag="description" title="Description" infos={currentRental.description} />
                     </article>
 
                     <article className="rental_dropdown equipment" id="rental_dropdown_equipments">
