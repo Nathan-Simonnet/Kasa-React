@@ -1,4 +1,4 @@
-# Site web de location d’appartements  - Kasa (version 2.0)
+# Site web de location d’appartements  - Kasa 
 
 ![Page d'acceuil du site Kasa](src/assets/images/Kasa-thumbnail.png)
 
