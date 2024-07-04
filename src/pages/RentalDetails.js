@@ -23,7 +23,7 @@ function RentalDetails() {
 
     useEffect(() => {
         if (datasRentals.length > 0) {
-            const foundRental = datasRentals.find(data => data.id == id);
+            const foundRental = datasRentals.find(data => data.id === id);
             foundRental ? setCurrentRental(foundRental) : navigateToError('/error');
         }
     }, [datasRentals, id, navigateToError]);

@@ -12,10 +12,10 @@ function App({ currentPage }) {
             <nav className="header-nav" >
                 <ul className="header_nav_ul" >
                     <li className="header_nav_li" >
-                        <a className={`header_nav_link ${currentPage == "/" ? "active" : ""}`} id="home_link" aria-label="Acceuil " href="/">Accueil</a>
+                        <a className={`header_nav_link ${currentPage === "/" ? "active" : ""}`} id="home_link" aria-label="Acceuil " href="/">Accueil</a>
                     </li>
                     <li className="header_nav_li" >
-                        <a className={`header_nav_link ${currentPage == "/about" ? "active" : ""}`} id="about_link" aria-label="À propos" href="/a-propos">A Propos</a>
+                        <a className={`header_nav_link ${currentPage === "/about" ? "active" : ""}`} id="about_link" aria-label="À propos" href="/a-propos">A Propos</a>
                     </li>
                 </ul>
             </nav>

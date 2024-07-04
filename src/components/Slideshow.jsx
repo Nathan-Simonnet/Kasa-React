@@ -17,7 +17,7 @@ function Slideshow({ currentId }) {
 
     useEffect(() => {
         if (datasRentals.length > 0) {
-            setCurrentRental(datasRentals.find(data => data.id == currentId));
+            setCurrentRental(datasRentals.find(data => data.id === currentId));
             // setCarouselIndex(0); // Could reset carousel index when rental changes
         }
     }, [datasRentals, currentId]);
