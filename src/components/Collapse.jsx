@@ -6,6 +6,12 @@ function Collapse({ tag, title, infos }) {
     const [isVisible, setIsVisible] = useState(false)
     const handleClick = () => { setIsVisible(!isVisible) }
 
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            handleClick();
+        }
+    };
+
     // Map only for equipments because it's a list of 'p' instead of 1 block
     const textInjection = () => {
         // Prevent react from trying to display an inexisting or undifined/null element
@@ -22,9 +28,14 @@ function Collapse({ tag, title, infos }) {
         <React.Fragment >
             <div className="dropdown_title-container">
                 <h2 tabIndex="0" className="dropdown_title">{title}</h2>
-                <i tabIndex="0" aria-label='Cliquez ou appuyez sur entrer pour afficher le texte, sinon tab' className={isVisible ?
+                <i tabIndex="0" 
+                aria-label='Cliquez ou appuyez sur entrer pour afficher le texte, sinon tab' 
+                className={isVisible ?
                     "chevron fa-solid fa-chevron-up active"
-                    : "chevron fa-solid fa-chevron-up"} onClick={handleClick} ></i>
+                    : "chevron fa-solid fa-chevron-up"} 
+                    onClick={handleClick}
+                    onKeyDown={handleKeyDown}
+                    ></i>
             </div>
             <div tabIndex="0" className={isVisible ? `dropdown_text`
                 : `dropdown_text hidden`} id={tag}>
