@@ -2,7 +2,7 @@
 
 Ce document est le seul nécessaire pour comprendre le contexte du projet et le déployer sur Netlify de façon autonome et sécurisée. Il reflète l'état réel du dépôt au moment de la rédaction — pas une procédure Netlify générique.
 
-> **Statut** : un premier déploiement de production a été réalisé et validé avec succès le 2026-07-23.
+> **Statut** : déploiement de production réalisé et validé le 2026-07-23 ; **CD GitHub↔Netlify active depuis le 2026-07-23** (chaque `git push` sur `main` redéploie automatiquement, vérifié indépendamment — voir §6).
 > Site live : **https://kasa-react-app-283.netlify.app** (admin : https://app.netlify.com/projects/kasa-react-app-283). Les commandes et points d'attention ci-dessous ont été mis à jour avec ce qui a réellement été exécuté et rencontré — voir §8 pour le détail des difficultés rencontrées.
 
 ## 1. Contexte de l'application
@@ -40,7 +40,7 @@ Points clés à comprendre avant de déployer :
 ## 3. Environnements / infrastructure
 
 - **Un seul environnement existe : la production.** Site Netlify créé le 2026-07-23 via CLI : nom `kasa-react-app-283`, équipe `Openclassrooms` (slug `nathan-simonnet`), URL `https://kasa-react-app-283.netlify.app`, site ID `50a176f7-981c-44e0-b140-560097d1b3d5`.
-- **Aucune continuité (CD) avec GitHub n'est configurée pour l'instant** : ce premier déploiement a été fait en manuel via `netlify deploy --prod` (Option B, §5), pas en liant le dépôt (Option A). Chaque nouveau `git push` sur `main` **ne redéploiera pas automatiquement** tant que le dépôt GitHub n'a pas été lié dans le dashboard Netlify (*Site configuration → Build & deploy → Link repository* — cette étape nécessite d'autoriser l'app GitHub de Netlify, une action interactive à faire soi-même).
+- **La continuité (CD) avec GitHub est active depuis le 2026-07-23** (liée manuellement via l'UI Netlify, Option A du §5 — l'autorisation de l'app GitHub de Netlify est une étape interactive qui a été faite directement dans le dashboard). Chaque `git push` sur `main` redéploie désormais automatiquement. Confirmé via `netlify api listSiteDeploys` : les déploiements des commits `5c5f729` et `8e0689d` (poussés avant la liaison) ont bien été rebuild automatiquement après coup, `commit_ref`/`commit_url`/`committer` renseignés et pointant vers le bon commit GitHub, `state: "ready"`, `error_message: null`.
 - **Domaine** : aucun domaine personnalisé configuré. Le site est accessible via le sous-domaine par défaut `kasa-react-app-283.netlify.app`. Le nom a été auto-suffixé (`-283`) par Netlify car un nom plus court était probablement déjà pris par un autre compte — c'est normal et sans conséquence.
 - **Hébergement statique uniquement** : aucune Netlify Function, aucun proxy d'API, aucune base de données côté Netlify n'est nécessaire ni configurée.
 
@@ -117,7 +117,9 @@ Si un site existe déjà et que vous voulez seulement le relier à un nouveau cl
 
 ## 6. Validation post-déploiement
 
-Une fois le déploiement terminé (statut **Published** dans l'onglet *Deploys* du dashboard, ou fin de commande `netlify deploy --prod`), vérifier dans cet ordre. **Ces 6 points ont été exécutés et validés avec succès sur `https://kasa-react-app-283.netlify.app` le 2026-07-23** :
+### Vérifications manuelles dans le navigateur
+
+Une fois le déploiement terminé (statut **Published** dans l'onglet *Deploys* du dashboard, ou fin de commande `netlify deploy --prod`), vérifier dans cet ordre. **Ces 6 points ont été exécutés et validés avec succès sur `https://kasa-react-app-283.netlify.app`, à la fois lors du premier déploiement manuel (2026-07-23) et après activation de la CD GitHub (2026-07-23)** :
 
 1. **Log de build** : dans l'onglet *Deploys → [dernier déploiement] → Deploy log*, confirmer la présence de `Compiled successfully.` et l'absence d'erreur (des warnings Sass/Node sont attendus, voir §5). ✅
 2. **Page d'accueil** (`https://<nom-du-site>.netlify.app/`) : les cartes de logements doivent s'afficher (preuve que `logements.json` est bien servi). ✅ Les 20 logements s'affichent.
@@ -125,6 +127,44 @@ Une fois le déploiement terminé (statut **Published** dans l'onglet *Deploys* 
 4. **Rafraîchissement direct d'une route profonde** : recharger la page sur `/a-propos` ou `/location/<id>` (F5) → doit afficher la page correspondante, **pas une 404 Netlify**. ✅ Testé sur `/a-propos` et `/location/c67ab8a7` en accès direct (pas juste en navigation cliquée) — grâce à `public/_redirects` (voir §4). Si une 404 Netlify apparaît malgré tout, ce fichier a probablement été retiré ou mal déployé.
 5. **Gestion d'erreur applicative** : naviguer vers `/location/id-inexistant` → doit afficher la page 404 **de l'application** (`Oups! La page que vous demandez n'existe pas.`), pas une erreur Netlify. ✅
 6. **Console navigateur** : aucune erreur. ✅ Aucun message d'erreur ni warning sur les 4 pages testées.
+
+Une vérification au navigateur est utile mais reste **manuelle et non reproductible automatiquement** — les méthodes suivantes permettent de confirmer la même chose sans réouvrir un navigateur à chaque déploiement, et de vérifier des points qu'un simple coup d'œil ne révèle pas (origine réelle du déploiement, valeur exacte des variables d'environnement).
+
+### Tests end-to-end Playwright contre le site déployé
+
+`playwright.config.js` accepte une variable `PLAYWRIGHT_BASE_URL` : si elle est définie, la suite s'exécute contre cette URL au lieu de démarrer un serveur de dev local — pratique pour rejouer automatiquement les mêmes scénarios que la validation manuelle (accueil → détail, ID inconnu → 404, navigation "À propos") contre le site réellement déployé :
+
+```bash
+PLAYWRIGHT_BASE_URL=https://kasa-react-app-283.netlify.app yarn test:e2e
+```
+
+✅ Exécuté le 2026-07-23 contre le site live : 3/3 tests passés (`la page d'accueil affiche des logements et mène à une page de détail`, `un identifiant de logement inconnu redirige vers la page 404`, `la navigation vers "À propos" fonctionne sans rechargement complet`). Le comportement par défaut sans cette variable (serveur local) reste inchangé et a été revérifié en parallèle.
+
+### Confirmer que le déploiement vient bien de la CD GitHub (pas d'un reliquat manuel)
+
+Un déploiement "Published" ne prouve pas à lui seul qu'il a été déclenché par le bon mécanisme. Depuis le CLI (site déjà lié via `.netlify/state.json`, voir §5 Option B) :
+
+```bash
+netlify api listSiteDeploys --data '{"site_id":"<SITE_ID>"}'
+```
+
+Dans la réponse, pour le déploiement le plus récent, vérifier :
+- `"context": "production"` et `"state": "ready"`
+- `"commit_ref"` renseigné avec le SHA du dernier commit poussé sur `main` (comparer avec `git log -1 --format=%H`), et `"commit_url"` pointant vers `github.com/Nathan-Simonnet/Kasa-React/commit/...`
+- `"error_message": null`
+- Dans `"summary.messages"`, une entrée `"1 redirect rule processed" / "All redirect rules deployed without errors."` — confirme que `public/_redirects` (§4) est bien pris en compte à chaque build, pas seulement lors du premier déploiement manuel.
+
+✅ Vérifié le 2026-07-23 : les déploiements des commits `5c5f729` et `8e0689d` (poussés juste avant la liaison CD) ont été rebuild automatiquement après la liaison, avec ces informations correctement renseignées.
+
+### Confirmer la valeur réelle des variables d'environnement
+
+Une variable ajoutée via l'UI peut contenir une faute de frappe invisible à l'œil (espace, mauvaise clé). Vérifier la valeur telle qu'enregistrée côté Netlify plutôt que de se fier à ce qui a été saisi :
+
+```bash
+netlify env:list --json
+```
+
+✅ Vérifié le 2026-07-23 : `{"NODE_VERSION": "22"}`, conforme à ce qui est recommandé au §4.
 
 ## 7. Rollback / gestion des incidents
 
@@ -170,10 +210,11 @@ Section tenue à jour à chaque déploiement notable, pour que les difficultés 
 | `yarn build` puis `netlify deploy --prod --dir=build` | ✅ Sans erreur | `Compiled successfully.`, seuls les warnings de dépréciation Sass/Node habituels (voir [docs/TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md)). |
 | Validation post-déploiement (§6) | ✅ 6/6 | Aucune régression par rapport au comportement local. |
 | Suppression de `package-lock.json` (post-déploiement) | ✅ Correction appliquée | Les deux lockfiles coexistaient encore au moment du premier déploiement, ce qui laissait le choix `npm run build` vs `yarn build` ambigu dans ce guide. Netlify auto-détecte le gestionnaire de paquets depuis le lockfile présent : avec les deux, le résultat n'était pas garanti stable. `package-lock.json` retiré, `yarn` fixé comme unique gestionnaire (voir §2). Vérifié : `yarn install --frozen-lockfile`, `yarn lint`, `yarn test`, `yarn build` passent tous après suppression. |
+| Liaison CD GitHub↔Netlify (via l'UI, par l'utilisateur) + `NODE_VERSION` | ✅ Sans difficulté rapportée | Faite directement dans le dashboard (étape interactive, non réalisable en CLI). Vérifiée de façon indépendante à froid le 2026-07-23 (voir §6) : `netlify api listSiteDeploys` confirme que les commits `5c5f729` et `8e0689d` ont bien été rebuild automatiquement (`commit_ref`/`commit_url` corrects, `state: ready`, `error_message: null`, règle `_redirects` traitée sans erreur) ; `netlify env:list --json` confirme `NODE_VERSION=22` ; `PLAYWRIGHT_BASE_URL=... yarn test:e2e` : 3/3 tests passés contre le site live. |
 
 **Non fait à ce stade, à prévoir séparément si besoin** :
-- Liaison continue avec le dépôt GitHub (Option A, §5) — nécessite une autorisation interactive de l'app GitHub de Netlify, non réalisable en CLI/automatisé.
 - Domaine personnalisé (aucun domaine n'existait à documenter, voir §3).
+- Deploy Previews automatiques sur les pull requests (activés par défaut une fois la CD liée, mais pas encore testés avec une PR réelle).
 
 ---
 
