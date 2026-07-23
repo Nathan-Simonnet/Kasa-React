@@ -11,6 +11,12 @@ Ouvrir [http://localhost:3000](http://localhost:3000) pour le visualiser dans vo
 
 La page se rechargera lorsque vous apporterez des modifications.
 
+## Documentation
+
+- [Documentation technique](docs/TECHNICAL_DOCUMENTATION.md) — installation, architecture, environnement, conventions
+- [Stratégie de tests](docs/TESTING_STRATEGY.md) — outils, organisation, couverture
+- [Guide de déploiement](docs/DEPLOYMENT.md) — déploiement Netlify, configuration, rollback
+
 ## Présentation
 ### Technos
 ![image](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
