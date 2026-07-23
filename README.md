@@ -4,8 +4,8 @@
 
 ## Utilisation
 
-### `yarn` ou `npm install`
-### `yarn start` ou `npm start`
+### `yarn`
+### `yarn start`
 
 Ouvrir [http://localhost:3000](http://localhost:3000) pour le visualiser dans votre navigateur.
 

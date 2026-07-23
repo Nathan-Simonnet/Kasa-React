@@ -23,7 +23,7 @@ Points clés à comprendre avant de déployer :
 | Outil | Version testée dans ce projet | Où le vérifier |
 |---|---|---|
 | Node.js | **Non figée dans le dépôt** — ni champ `engines` dans `package.json`, ni fichier `.nvmrc`. La seule version documentée est celle du `Dockerfile` (`node:22-bookworm-slim`, soit Node 22), utilisée avec succès pour builder ce projet. | `node --version` |
-| npm ou yarn | Les deux fonctionnent, mais **les deux lockfiles coexistent** (`package-lock.json` et `yarn.lock`) — signe que le projet n'a pas figé un seul gestionnaire de paquets. Le `Dockerfile` utilise `yarn`. | `npm --version` / `yarn --version` |
+| yarn | **Gestionnaire de paquets unique du projet** (`yarn.lock` est le seul lockfile versionné ; `package-lock.json` a été retiré du dépôt et est désormais ignoré, voir `.gitignore`). Utilisé par le `Dockerfile` et pour ce premier déploiement Netlify. N'utilisez pas `npm install`/`npm ci`. | `yarn --version` |
 
 ⚠️ Comme Netlify n'a aucune indication de version Node dans ce dépôt, il utilisera sa version par défaut (régulièrement mise à jour par Netlify), ce qui peut différer de ce qui a été testé localement. Voir §4 pour la recommandation de fixer `NODE_VERSION`.
 
@@ -75,7 +75,7 @@ Seule variable recommandée côté build (pas un secret) :
 
 ```bash
 git pull origin main
-yarn install --frozen-lockfile   # ou npm ci
+yarn install --frozen-lockfile
 yarn lint
 CI=true yarn test --watchAll=false
 yarn build
@@ -88,7 +88,7 @@ yarn build
 1. Dans le dashboard Netlify : **Add new site → Import an existing project → GitHub**, sélectionner le dépôt `Nathan-Simonnet/Kasa-React` (voir §2 pour la nouvelle URL).
 2. Choisir la branche `main`.
 3. Renseigner manuellement (aucun `netlify.toml` ne les fournit) :
-   - **Build command** : `npm run build` (ou `yarn build` si vous préférez rester cohérent avec le `Dockerfile`, voir §2 sur les deux lockfiles)
+   - **Build command** : `yarn build`
    - **Publish directory** : `build`
 4. Ajouter la variable `NODE_VERSION` (voir §4) avant le premier déploiement.
 5. Configurer la règle de redirection SPA (voir §4) avant de tester la navigation.
@@ -103,7 +103,7 @@ netlify login                                            # ouvre le navigateur p
 netlify status                                           # confirme le compte et récupère le slug d'équipe (ex. "nathan-simonnet")
 netlify sites:create -a nathan-simonnet -n kasa-react-app  # crée le site ET le lie au dossier courant (.netlify/state.json)
 netlify env:set NODE_VERSION 22                          # fixe la version Node (voir §4)
-yarn build                                                # ou npm run build — régénère build/ (inclut public/_redirects)
+yarn build                                                # régénère build/ (inclut public/_redirects)
 netlify deploy --prod --dir=build                         # déploiement de production
 ```
 
@@ -147,7 +147,7 @@ restaure ce déploiement comme version publiée (`<SITE_ID>` visible dans *Site 
 
 1. **Rollback immédiat** vers le dernier déploiement sain (méthode ci-dessus) pour couper court à l'impact utilisateur — cette action ne dépend d'aucune correction de code.
 2. **Diagnostiquer** ensuite à tête reposée :
-   - Build qui échoue sur Netlify mais pas en local → comparer la version de Node utilisée (voir §4, `NODE_VERSION`) et l'état des lockfiles (§2).
+   - Build qui échoue sur Netlify mais pas en local → comparer la version de Node utilisée (voir §4, `NODE_VERSION`) ; vérifier qu'aucun `package-lock.json` n'a été recommité par erreur (voir §2 — `yarn` est le seul gestionnaire de paquets du projet).
    - Page blanche ou assets manquants après déploiement → vérifier qu'aucun champ `homepage` n'a été ajouté à `package.json` (absent aujourd'hui, ce qui suppose un hébergement à la racine du domaine) et que le *Publish directory* est bien `build`.
    - 404 sur une route déjà fonctionnelle auparavant → la règle de redirection SPA (§4) a probablement été perdue lors d'une reconfiguration du site ; la restaurer.
 3. **Corriger sur une branche**, valider en local (§5, Étape 0), rouvrir une pull request, puis ne redéployer en production qu'une fois la correction validée — ne jamais corriger un incident directement en modifiant les réglages du site sans trace dans le dépôt si le correctif touche au code.
@@ -165,6 +165,7 @@ Section tenue à jour à chaque déploiement notable, pour que les difficultés 
 | `netlify env:set NODE_VERSION 22` | ✅ Sans difficulté | Appliqué au contexte `all` du site. |
 | `yarn build` puis `netlify deploy --prod --dir=build` | ✅ Sans erreur | `Compiled successfully.`, seuls les warnings de dépréciation Sass/Node habituels (voir [docs/TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md)). |
 | Validation post-déploiement (§6) | ✅ 6/6 | Aucune régression par rapport au comportement local. |
+| Suppression de `package-lock.json` (post-déploiement) | ✅ Correction appliquée | Les deux lockfiles coexistaient encore au moment du premier déploiement, ce qui laissait le choix `npm run build` vs `yarn build` ambigu dans ce guide. Netlify auto-détecte le gestionnaire de paquets depuis le lockfile présent : avec les deux, le résultat n'était pas garanti stable. `package-lock.json` retiré, `yarn` fixé comme unique gestionnaire (voir §2). Vérifié : `yarn install --frozen-lockfile`, `yarn lint`, `yarn test`, `yarn build` passent tous après suppression. |
 
 **Non fait à ce stade, à prévoir séparément si besoin** :
 - Liaison continue avec le dépôt GitHub (Option A, §5) — nécessite une autorisation interactive de l'app GitHub de Netlify, non réalisable en CLI/automatisé.

@@ -3,6 +3,8 @@
 /node_modules
 /.pnp
 .pnp.js
+# yarn is the package manager for this project — see docs/TECHNICAL_DOCUMENTATION.md
+package-lock.json
 
 # testing
 /coverage

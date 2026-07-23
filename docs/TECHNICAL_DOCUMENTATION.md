@@ -5,9 +5,11 @@ Ce document décrit l'installation, l'architecture, l'environnement de développ
 ## 1. Installation et lancement
 
 ```bash
-yarn            # ou npm install
-yarn start      # ou npm start
+yarn
+yarn start
 ```
+
+**yarn est le gestionnaire de paquets de ce projet** (utilisé par le `Dockerfile`, seul lockfile versionné). N'utilisez pas `npm install`/`npm ci` : cela régénérerait un `package-lock.json` qui n'est plus suivi par git (ignoré volontairement, voir `.gitignore`) et pourrait diverger de `yarn.lock`.
 
 Ouvrir [http://localhost:3000](http://localhost:3000), avec rechargement à chaud (Create React App) **et** recompilation automatique du Sass à chaque modification d'un fichier `.scss`.
 
@@ -16,7 +18,7 @@ Ouvrir [http://localhost:3000](http://localhost:3000), avec rechargement à chau
 | `start` | `concurrently ... "npm:watch:css" "npm:start:react"` | Lance en parallèle le watcher Sass et le serveur de dev CRA |
 | `start:react` | `react-scripts start` | Serveur de dev seul, sans watcher Sass |
 | `watch:css` | `sass --watch main.scss:style.min.css` | Recompile le CSS à chaque sauvegarde d'un fichier `.scss` |
-| `build` | `npm run build:css && react-scripts build` | Recompile le CSS puis build de production dans `build/` |
+| `build` | `npm run build:css && react-scripts build` | Recompile le CSS puis build de production dans `build/`. Le `npm run` interne est volontaire (portabilité : `npm` est toujours présent avec Node, même sur une machine sans `yarn`) — lancer `yarn build` reste la commande recommandée (voir §1). |
 | `build:css` | `sass src/styles/sass/main.scss src/styles/sass/style.min.css --style=compressed` | Compile une fois les sources Sass en CSS minifié |
 | `test` | `react-scripts test` | Tests unitaires/intégration (Jest + React Testing Library), mode watch |
 | `test:e2e` | `playwright test` | Tests end-to-end (Playwright), démarre automatiquement le serveur de dev |
@@ -61,7 +63,7 @@ playwright.config.js
 
 - **React 19** (function components + hooks : `useState`, `useEffect`, `useParams`, `useNavigate`)
 - **React Router v7** (`Routes`/`Route`/`Link`, `useParams`, `useNavigate`)
-- **Sass**, compilé via le script npm `build:css` (voir §6)
+- **Sass**, compilé via le script `build:css` (voir §6)
 - **Jest + React Testing Library** pour les tests unitaires/intégration (fournis par `react-scripts test`)
 - **Playwright** pour les tests end-to-end
 - **Font Awesome**, chargé via CDN dans `public/index.html` (pas une dépendance npm)
@@ -123,7 +125,6 @@ docker run -p 8080:80 kasa
 
 ## 10. Points connus, non résolus (hors périmètre des correctifs appliqués)
 
-- Deux lockfiles coexistent (`package-lock.json` et `yarn.lock`) — mélange d'outils de gestion de paquets à clarifier (le `Dockerfile` utilise `yarn`).
 - Les sources Sass utilisent encore `@import`, marqué déprécié par Dart Sass (migration vers `@use`/`@forward` non faite) — le watcher affiche ces avertissements à chaque compilation sans bloquer.
 - `Header.js`, `Footer.js` et `About.js` n'ont pas encore de tests dédiés.
 - Le dépôt GitHub a été renommé (`Kasa` → `Kasa-React`) ; l'URL du remote local devrait être mise à jour (`git remote set-url origin ...`).
