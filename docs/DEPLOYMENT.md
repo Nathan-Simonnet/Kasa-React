@@ -2,6 +2,9 @@
 
 Ce document est le seul nécessaire pour comprendre le contexte du projet et le déployer sur Netlify de façon autonome et sécurisée. Il reflète l'état réel du dépôt au moment de la rédaction — pas une procédure Netlify générique.
 
+> **Statut** : un premier déploiement de production a été réalisé et validé avec succès le 2026-07-23.
+> Site live : **https://kasa-react-app-283.netlify.app** (admin : https://app.netlify.com/projects/kasa-react-app-283). Les commandes et points d'attention ci-dessous ont été mis à jour avec ce qui a réellement été exécuté et rencontré — voir §8 pour le détail des difficultés rencontrées.
+
 ## 1. Contexte de l'application
 
 **Kasa** est un **POC (proof of concept) front-end** de type Airbnb : un site vitrine de location d'appartements entre particuliers, développé dans le cadre d'un exercice de formation (voir la section "Scénario/Missions" du [README](../README.md)).
@@ -36,22 +39,25 @@ Points clés à comprendre avant de déployer :
 
 ## 3. Environnements / infrastructure
 
-- **Aucun environnement de staging/dev Netlify n'existe actuellement** dans ce dépôt (pas de `netlify.toml` avec des `[context.*]`, pas de branches de preview documentées).
-- Un seul environnement est donc à prévoir dans un premier temps : la **production**, déployée depuis la branche `main`.
-- **Domaine** : aucun domaine personnalisé n'est référencé dans le projet (pas de champ `homepage` dans `package.json`, aucune configuration DNS documentée). Le site sera donc accessible via le sous-domaine par défaut fourni par Netlify (`https://<nom-du-site>.netlify.app`) tant qu'un domaine personnalisé n'est pas explicitement configuré dans le dashboard Netlify.
+- **Un seul environnement existe : la production.** Site Netlify créé le 2026-07-23 via CLI : nom `kasa-react-app-283`, équipe `Openclassrooms` (slug `nathan-simonnet`), URL `https://kasa-react-app-283.netlify.app`, site ID `50a176f7-981c-44e0-b140-560097d1b3d5`.
+- **Aucune continuité (CD) avec GitHub n'est configurée pour l'instant** : ce premier déploiement a été fait en manuel via `netlify deploy --prod` (Option B, §5), pas en liant le dépôt (Option A). Chaque nouveau `git push` sur `main` **ne redéploiera pas automatiquement** tant que le dépôt GitHub n'a pas été lié dans le dashboard Netlify (*Site configuration → Build & deploy → Link repository* — cette étape nécessite d'autoriser l'app GitHub de Netlify, une action interactive à faire soi-même).
+- **Domaine** : aucun domaine personnalisé configuré. Le site est accessible via le sous-domaine par défaut `kasa-react-app-283.netlify.app`. Le nom a été auto-suffixé (`-283`) par Netlify car un nom plus court était probablement déjà pris par un autre compte — c'est normal et sans conséquence.
 - **Hébergement statique uniquement** : aucune Netlify Function, aucun proxy d'API, aucune base de données côté Netlify n'est nécessaire ni configurée.
 
 ## 4. Configuration et accès
 
 ### Fichier de configuration Netlify
 
-**Il n'existe aucun `netlify.toml` ni fichier `public/_redirects` dans ce dépôt à ce jour.** Cela signifie que :
+**Il n'existe toujours aucun `netlify.toml` dans ce dépôt** — la commande de build et le dossier de publication doivent donc être saisis manuellement dans le dashboard Netlify si vous liez le dépôt via l'UI (Option A, §5), ou passés explicitement en CLI (`--dir=build`, Option B).
 
-- La configuration du build (commande de build, dossier de publication) **doit être saisie manuellement dans le dashboard Netlify** lors de la création du site (voir §5), plutôt que d'être déduite automatiquement d'un fichier versionné.
-- **Point d'attention critique pour une SPA React Router** : sans règle de redirection, Netlify renverra une **404 native** sur toute URL autre que `/` en cas d'accès direct ou de rafraîchissement (ex. `/a-propos`, `/location/c67ab8a7`), puisqu'aucun fichier physique ne correspond à ces chemins — seul `index.html` doit répondre, et c'est React Router qui gère le routing côté client ensuite. C'est exactement le rôle que joue `nginx.conf` (`try_files $uri $uri/ /index.html`) dans le déploiement Docker existant (voir [docs/TECHNICAL_DOCUMENTATION.md §7](TECHNICAL_DOCUMENTATION.md#7-déploiement-docker)) — il faut l'équivalent côté Netlify.
-- Cette règle doit être configurée **avant le premier test de navigation directe**, via l'une de ces deux méthodes (à défaut d'un fichier déjà présent dans le repo) :
-  - **Dans le dashboard Netlify** : *Site configuration → Build & deploy → Post processing → Redirects and rewrites*, ajouter une règle `/*` → `/index.html`, statut `200`.
-  - **Ou en versionnant un fichier `public/_redirects`** contenant `/*  /index.html  200` (repris automatiquement par le build CRA dans `build/_redirects`). Cette seconde option est recommandée pour que la règle survive à une reconfiguration du site dans le dashboard, mais n'est pas présente aujourd'hui dans le dépôt — à ajouter lors de la mise en place initiale du site Netlify.
+**En revanche, [`public/_redirects`](../public/_redirects) existe désormais** (ajouté le 2026-07-23, avant le premier déploiement) et contient :
+```
+/*  /index.html  200
+```
+- **Pourquoi c'est indispensable** : sans cette règle, Netlify renvoie une **404 native** sur toute URL autre que `/` en cas d'accès direct ou de rafraîchissement (ex. `/a-propos`, `/location/c67ab8a7`), puisqu'aucun fichier physique ne correspond à ces chemins — seul `index.html` doit répondre, et c'est React Router qui gère le routing côté client ensuite. C'est exactement le rôle que joue `nginx.conf` (`try_files $uri $uri/ /index.html`) dans le déploiement Docker existant (voir [docs/TECHNICAL_DOCUMENTATION.md §7](TECHNICAL_DOCUMENTATION.md#7-déploiement-docker)).
+- Ce fichier, placé dans `public/`, est copié tel quel dans `build/_redirects` par `react-scripts build` — aucune étape manuelle supplémentaire n'est nécessaire au moment du build.
+- **Validé en conditions réelles** sur `https://kasa-react-app-283.netlify.app` : accès direct à `/a-propos` et `/location/c67ab8a7` fonctionnels, voir §6 et §8.
+- Si ce fichier venait à être supprimé par erreur, la règle équivalente peut être recréée manuellement dans le dashboard : *Site configuration → Build & deploy → Post processing → Redirects and rewrites* (`/*` → `/index.html`, statut `200`) — mais la version versionnée dans le dépôt reste la source de vérité à privilégier.
 
 ### Variables d'environnement / secrets
 
@@ -59,7 +65,7 @@ Recherche effectuée dans le code (`grep -rn "process.env\." src`) : **aucune va
 
 Seule variable recommandée côté build (pas un secret) :
 
-- `NODE_VERSION` — à définir dans *Site configuration → Environment variables* du dashboard Netlify, pour fixer la version de Node utilisée par le build Netlify et éviter une dérive par rapport à la version testée (voir §2). Valeur recommandée : celle du `Dockerfile` (`22`).
+- `NODE_VERSION` — définie à `22` sur le site live (contexte `all`), via `netlify env:set NODE_VERSION 22`, pour fixer la version de Node utilisée par le build Netlify et éviter une dérive par rapport à la version testée (voir §2). Valeur alignée sur celle du `Dockerfile`.
 
 **Règle générale** : si une variable d'environnement ou un secret devait être ajouté à l'avenir (ex. clé d'API), il doit être saisi uniquement via *Site configuration → Environment variables* du dashboard Netlify (ou `netlify env:set` en CLI, jamais commité en clair), et jamais ajouté à ce document ni à un fichier versionné du dépôt.
 
@@ -88,28 +94,33 @@ yarn build
 5. Configurer la règle de redirection SPA (voir §4) avant de tester la navigation.
 6. Lancer le déploiement (**Deploy site**). Chaque nouveau `git push` sur `main` redéploiera automatiquement.
 
-### Option B — Déploiement manuel via Netlify CLI (ponctuel, ou pour un premier test avant de lier le dépôt)
+### Option B — Déploiement manuel via Netlify CLI (méthode utilisée pour le premier déploiement)
+
+Commandes exactes utilisées pour créer et déployer le site `kasa-react-app-283` :
 
 ```bash
-netlify login
-netlify init            # crée ou lie un site Netlify à ce dossier local (crée .netlify/)
-yarn build
-netlify deploy --prod --dir=build
+netlify login                                            # ouvre le navigateur pour OAuth, à valider soi-même
+netlify status                                           # confirme le compte et récupère le slug d'équipe (ex. "nathan-simonnet")
+netlify sites:create -a nathan-simonnet -n kasa-react-app  # crée le site ET le lie au dossier courant (.netlify/state.json)
+netlify env:set NODE_VERSION 22                          # fixe la version Node (voir §4)
+yarn build                                                # ou npm run build — régénère build/ (inclut public/_redirects)
+netlify deploy --prod --dir=build                         # déploiement de production
 ```
 
-`netlify init` demandera la commande de build et le dossier de publication : répondre `npm run build`/`yarn build` et `build`, comme en Option A.
+⚠️ **Piège rencontré** : `netlify sites:create -a <slug>` attend le **slug** du compte/équipe, pas son nom affiché. `-a Openclassrooms` (nom affiché dans le dashboard) échoue avec `Error: createSiteInTeam error: 404: Not Found`. Le slug réel (`nathan-simonnet` dans ce cas) s'obtient via `netlify status` (champ `siteData`/`account`) ou `netlify api listAccountsForUser` (champ `slug`). Voir §8.
+
+Si un site existe déjà et que vous voulez seulement le relier à un nouveau clone du dépôt : `netlify link` (interactif) à la place de `netlify sites:create`.
 
 ## 6. Validation post-déploiement
 
-Une fois le déploiement terminé (statut **Published** dans l'onglet *Deploys* du dashboard, ou fin de commande `netlify deploy --prod`), vérifier dans cet ordre :
+Une fois le déploiement terminé (statut **Published** dans l'onglet *Deploys* du dashboard, ou fin de commande `netlify deploy --prod`), vérifier dans cet ordre. **Ces 6 points ont été exécutés et validés avec succès sur `https://kasa-react-app-283.netlify.app` le 2026-07-23** :
 
-1. **Log de build** : dans l'onglet *Deploys → [dernier déploiement] → Deploy log*, confirmer la présence de `Compiled successfully.` et l'absence d'erreur (des warnings Sass/Node sont attendus, voir §5).
-2. **Page d'accueil** (`https://<nom-du-site>.netlify.app/`) : les cartes de logements doivent s'afficher (preuve que `logements.json` est bien servi).
-3. **Navigation SPA** : cliquer sur un logement → l'URL doit passer à `/location/<id>` et afficher le détail (carrousel, notation, description).
-4. **Rafraîchissement direct d'une route profonde** : recharger la page sur `/a-propos` ou `/location/<id>` (F5) → doit afficher la page correspondante, **pas une 404 Netlify**. Si une 404 Netlify apparaît, la règle de redirection SPA du §4 n'a pas été appliquée.
-5. **Gestion d'erreur applicative** : naviguer vers `/location/id-inexistant` → doit afficher la page 404 **de l'application** (`Oups! La page que vous demandez n'existe pas.`), pas une erreur Netlify.
-6. **Console navigateur** : aucune erreur (les outils de dev fournissent `read_console_messages` en interne ; sinon vérifier manuellement dans les DevTools du navigateur).
-7. Pour une comparaison de référence, les mêmes vérifications ont été effectuées en local avec succès (voir échanges précédents de ce projet) — le comportement attendu sur Netlify est identique.
+1. **Log de build** : dans l'onglet *Deploys → [dernier déploiement] → Deploy log*, confirmer la présence de `Compiled successfully.` et l'absence d'erreur (des warnings Sass/Node sont attendus, voir §5). ✅
+2. **Page d'accueil** (`https://<nom-du-site>.netlify.app/`) : les cartes de logements doivent s'afficher (preuve que `logements.json` est bien servi). ✅ Les 20 logements s'affichent.
+3. **Navigation SPA** : cliquer sur un logement → l'URL doit passer à `/location/<id>` et afficher le détail (carrousel, notation, description). ✅
+4. **Rafraîchissement direct d'une route profonde** : recharger la page sur `/a-propos` ou `/location/<id>` (F5) → doit afficher la page correspondante, **pas une 404 Netlify**. ✅ Testé sur `/a-propos` et `/location/c67ab8a7` en accès direct (pas juste en navigation cliquée) — grâce à `public/_redirects` (voir §4). Si une 404 Netlify apparaît malgré tout, ce fichier a probablement été retiré ou mal déployé.
+5. **Gestion d'erreur applicative** : naviguer vers `/location/id-inexistant` → doit afficher la page 404 **de l'application** (`Oups! La page que vous demandez n'existe pas.`), pas une erreur Netlify. ✅
+6. **Console navigateur** : aucune erreur. ✅ Aucun message d'erreur ni warning sur les 4 pages testées.
 
 ## 7. Rollback / gestion des incidents
 
@@ -130,7 +141,7 @@ récupère la liste des déploiements et leurs `deploy_id`, puis :
 ```bash
 netlify api restoreSiteDeploy --data '{"site_id":"<SITE_ID>","deploy_id":"<DEPLOY_ID_A_RESTAURER>"}'
 ```
-restaure ce déploiement comme version publiée (`<SITE_ID>` visible dans *Site configuration → General → Site details*).
+restaure ce déploiement comme version publiée (`<SITE_ID>` visible dans *Site configuration → General → Site details*, ou directement `50a176f7-981c-44e0-b140-560097d1b3d5` pour le site actuel `kasa-react-app-283`). Ces deux commandes n'ont pas encore été nécessaires en pratique (aucun incident depuis le premier déploiement) mais ont été confirmées comme des méthodes d'API valides (`netlify api <méthode>` accepte n'importe quelle méthode de l'API Netlify).
 
 ### Marche à suivre en cas d'incident
 
@@ -140,6 +151,24 @@ restaure ce déploiement comme version publiée (`<SITE_ID>` visible dans *Site 
    - Page blanche ou assets manquants après déploiement → vérifier qu'aucun champ `homepage` n'a été ajouté à `package.json` (absent aujourd'hui, ce qui suppose un hébergement à la racine du domaine) et que le *Publish directory* est bien `build`.
    - 404 sur une route déjà fonctionnelle auparavant → la règle de redirection SPA (§4) a probablement été perdue lors d'une reconfiguration du site ; la restaurer.
 3. **Corriger sur une branche**, valider en local (§5, Étape 0), rouvrir une pull request, puis ne redéployer en production qu'une fois la correction validée — ne jamais corriger un incident directement en modifiant les réglages du site sans trace dans le dépôt si le correctif touche au code.
+
+## 8. Journal du premier déploiement (2026-07-23)
+
+Section tenue à jour à chaque déploiement notable, pour que les difficultés déjà rencontrées ne soient pas redécouvertes à froid.
+
+| Étape | Résultat | Détail |
+|---|---|---|
+| `netlify login` | ✅ Sans difficulté | OAuth via navigateur, compte `nathan.simonnet@gmail.com`, équipe `Openclassrooms`. |
+| `netlify sites:create -a Openclassrooms -n kasa-react-app` | ❌ Échec (`404: Not Found`) | Voir §5 — `-a` attend le **slug** (`nathan-simonnet`), pas le nom affiché (`Openclassrooms`). Corrigé en récupérant le slug via `netlify status`. |
+| `netlify sites:create -a nathan-simonnet -n kasa-react-app` | ⚠️ Nom auto-suffixé | Le nom demandé était probablement déjà pris ailleurs sur Netlify (les noms de site sont globaux, tous comptes confondus) ; Netlify a créé `kasa-react-app-283` sans erreur ni avertissement explicite — à vérifier dans la réponse JSON (`"name"`) plutôt que de supposer que le nom demandé a été pris tel quel. |
+| Ajout de `public/_redirects` avant le build | ✅ Nécessaire | Sans ce fichier, `/a-propos` et `/location/:id` auraient renvoyé une 404 Netlify au premier accès direct — anticipé dès la rédaction initiale de ce document (§4), confirmé nécessaire en pratique. |
+| `netlify env:set NODE_VERSION 22` | ✅ Sans difficulté | Appliqué au contexte `all` du site. |
+| `yarn build` puis `netlify deploy --prod --dir=build` | ✅ Sans erreur | `Compiled successfully.`, seuls les warnings de dépréciation Sass/Node habituels (voir [docs/TECHNICAL_DOCUMENTATION.md](TECHNICAL_DOCUMENTATION.md)). |
+| Validation post-déploiement (§6) | ✅ 6/6 | Aucune régression par rapport au comportement local. |
+
+**Non fait à ce stade, à prévoir séparément si besoin** :
+- Liaison continue avec le dépôt GitHub (Option A, §5) — nécessite une autorisation interactive de l'app GitHub de Netlify, non réalisable en CLI/automatisé.
+- Domaine personnalisé (aucun domaine n'existait à documenter, voir §3).
 
 ---
 

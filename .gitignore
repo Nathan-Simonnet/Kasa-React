@@ -30,3 +30,5 @@ Dockerfile
 
 docker-compose.yml
 docker-compose.yaml
+# Local Netlify folder
+.netlify

@@ -29,6 +29,7 @@ Ouvrir [http://localhost:3000](http://localhost:3000), avec rechargement à chau
 public/
   index.html          # template HTML, charge Font Awesome via CDN
   logements.json       # "backend" simulé — base de données des logements
+  _redirects           # règle SPA pour Netlify (voir docs/DEPLOYMENT.md §4)
 e2e/
   navigation.spec.js   # tests end-to-end Playwright
 src/
