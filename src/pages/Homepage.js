@@ -2,17 +2,18 @@ import React, { useState, useEffect } from 'react';
 import Card from '../components/Card.jsx'
 import Header from '../layout/Header.js';
 import Footer from '../layout/Footer.js';
+import { getRentals } from '../services/rentals.js';
 
 function Homepage() {
 
     const [datasLogement, setDatasLogement] = useState([]);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         //  Component mounts
-        fetch('/logements.json')
-            .then(response => response.json())
+        getRentals()
             .then(data => setDatasLogement(data))
-            .catch(error => console.error('Error fetching rental details:', error));
+            .catch(error => setError(error.message));
         // Prevent ininite loop
     }, []);
 
@@ -24,6 +25,8 @@ function Homepage() {
                 <div className="presentation-img_container">
                     <h1 className="presentation_title">Chez vous, partout et ailleurs</h1>
                 </div>
+
+                {error && <p role="alert" className="fetch-error">Une erreur est survenue : {error}</p>}
 
                 <div className="rental-cards_container">
                     {datasLogement.map((data, index) => {

@@ -7,9 +7,12 @@
 
 # testing
 /coverage
+/playwright-report
+/test-results
 
 # production
 /build
+*.tar
 
 # misc
 .DS_Store

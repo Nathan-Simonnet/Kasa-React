@@ -27,3 +27,4 @@ Vous êtes développeur front-end en freelance pour Kasa, une entreprise de loca
 + Creer les 4 pages selon la maquette
 + Creer un carrousel pour la page de logement
 + Gerer l'erreur sur l'id d'une propriété
+

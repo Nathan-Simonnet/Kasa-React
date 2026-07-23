@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import placeholder from '../assets/images/placeholder.png';
+import { getRentals, findRentalById } from '../services/rentals.js';
 
 function Slideshow({ currentId }) {
     const [datasRentals, setDatasRentals] = useState([]);
     const [currentRental, setCurrentRental] = useState(null);
     const [carouselIndex, setCarouselIndex] = useState(0);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         // Fetch the data when the component mounts
-        fetch('/logements.json')
-            .then(response => response.json())
+        getRentals()
             .then(data => setDatasRentals(data))
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => setError(error.message));
         // Prevent infinite loop
     }, []);
 
     useEffect(() => {
         if (datasRentals.length > 0) {
-            setCurrentRental(datasRentals.find(data => data.id === currentId));
+            setCurrentRental(findRentalById(datasRentals, currentId));
             // setCarouselIndex(0); // Could reset carousel index when rental changes
         }
     }, [datasRentals, currentId]);
+
+    if (error) {
+        return <div role="alert" className="fetch-error">Une erreur est survenue : {error}</div>;
+    }
 
     // Oui c'est vitale! Sion react essayera de charger unélément inexistant (et c'est pas bien)
     if (!currentRental) {

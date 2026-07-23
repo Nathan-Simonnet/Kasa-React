@@ -1,4 +1,4 @@
-import './styles/style.min.css';
+import './styles/sass/style.min.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';

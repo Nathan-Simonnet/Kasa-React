@@ -4,29 +4,42 @@ import Header from '../layout/Header.js';
 import Slideshow from '../components/Slideshow.jsx';
 import Collapse from '../components/Collapse.jsx';
 import Footer from '../layout/Footer.js';
+import { getRentals, findRentalById } from '../services/rentals.js';
 
 function RentalDetails() {
 
     const { id } = useParams()
     const [datasRentals, setDatasRentals] = useState([]);
+    const [error, setError] = useState(null);
     const navigateToError = useNavigate();
     const [currentRental, setCurrentRental] = useState(null);
 
     useEffect(() => {
         // Fetch the data when the component mounts
-        fetch('/logements.json')
-            .then(response => response.json())
+        getRentals()
             .then(data => setDatasRentals(data))
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => setError(error.message));
         // Prevent infinite loop
     }, []);
 
     useEffect(() => {
         if (datasRentals.length > 0) {
-            const foundRental = datasRentals.find(data => data.id === id);
+            const foundRental = findRentalById(datasRentals, id);
             foundRental ? setCurrentRental(foundRental) : navigateToError('/error');
         }
     }, [datasRentals, id, navigateToError]);
+
+    if (error) {
+        return (
+            <React.Fragment>
+                <Header />
+                <main className="rental">
+                    <p role="alert" className="fetch-error">Une erreur est survenue : {error}</p>
+                </main>
+                <Footer />
+            </React.Fragment>
+        );
+    }
 
     // Oui c'est vitale! Sion react essayera de charger unélément inexistant (et c'est pas bien)
     if (!currentRental) {
