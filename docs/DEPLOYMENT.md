@@ -90,7 +90,11 @@ yarn build
 3. Renseigner manuellement (aucun `netlify.toml` ne les fournit) :
    - **Build command** : `yarn build`
    - **Publish directory** : `build`
-4. Ajouter la variable `NODE_VERSION` (voir §4) avant le premier déploiement.
+4. Ajouter la variable `NODE_VERSION` avant le premier déploiement (voir §4 pour le pourquoi). Deux façons d'y arriver, au choix :
+   - **Pendant l'assistant de création du site** : l'écran qui demande *Build command*/*Publish directory* (étape 3 ci-dessus) affiche aussi une section **"Environment variables"** avec un bouton **"New variable"** (ou "Add environment variables") — y renseigner `Key: NODE_VERSION` / `Value: 22`, avant de cliquer sur **Deploy site**.
+   - **Après coup, si le site est déjà créé** : dans le dashboard du site → **Site configuration** (menu de gauche) → **Environment variables** → bouton **Add a variable** → **Add a single variable** → renseigner `Key: NODE_VERSION`, `Value: 22`, laisser le scope par défaut ("Same value for all deploy contexts", suffisant ici puisqu'il n'y a qu'un seul environnement, voir §3) → **Create variable**.
+   - ⚠️ Si le site était déjà déployé avant l'ajout de la variable, celle-ci ne s'applique **pas rétroactivement** : il faut redéclencher un déploiement (**Deploys → Trigger deploy → Deploy site**) pour qu'elle soit prise en compte.
+   - Équivalent en CLI, une fois le site lié localement (`netlify link`) : `netlify env:set NODE_VERSION 22` — c'est exactement la commande utilisée pour le site actuel `kasa-react-app-283` (voir Option B et §8), où cette variable est donc déjà configurée.
 5. Configurer la règle de redirection SPA (voir §4) avant de tester la navigation.
 6. Lancer le déploiement (**Deploy site**). Chaque nouveau `git push` sur `main` redéploiera automatiquement.
 
